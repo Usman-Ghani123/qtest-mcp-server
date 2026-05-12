@@ -1,0 +1,4 @@
+node_modules/
+qtest-mcp-server-prompt.md
+.env
+.mcp.json
