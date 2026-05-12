@@ -6,6 +6,7 @@ import { getModules } from './tools/test-design/getModules.js'
 import { createModule } from './tools/test-design/createModule.js'
 import { createExecutionFolder } from './tools/test-execution/createExecutionFolder.js'
 import { addTestCases } from './tools/test-execution/addTestCases.js'
+import { listProjects } from './tools/projects/listProjects.js'
 
 export const server = new McpServer(
   { name: 'qtest-mcp-server', version: '0.1.0' },
@@ -109,6 +110,21 @@ server.registerTool(
   },
   async ({ projectId, suiteId, testCases }) => {
     const result = await addTestCases({ projectId, suiteId, testCases })
+    return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
+  }
+)
+
+server.registerTool(
+  'list-projects',
+  {
+    description:
+      'Projects — list all qTest projects, or fetch a single project by ID',
+    inputSchema: {
+      projectId: z.number().int().optional().describe('Project ID; omit to list all projects'),
+    },
+  },
+  async ({ projectId }) => {
+    const result = await listProjects({ projectId })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )

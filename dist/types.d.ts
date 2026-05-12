@@ -1,3 +1,11 @@
+export interface QTestProject {
+    id: number;
+    name: string;
+    description?: string;
+    statusId?: number;
+    startDate?: string;
+    endDate?: string;
+}
 export interface QTestModule {
     id: number;
     name: string;
