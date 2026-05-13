@@ -2,16 +2,23 @@
   "name": "qtest-mcp-server",
   "version": "0.1.0",
   "description": "Unofficial MCP server for qTest Manager — browse modules, fetch test cases, build test execution folders",
+  "author": "Usman Ghani <ug.usman18@outlook.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Usman-Ghani123/qtest-mcp-server.git"
+  },
   "main": "dist/index.js",
   "bin": {
     "qtest-mcp-server": "dist/index.js"
   },
+  "files": ["dist", "README.md", ".mcp.example.json"],
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "dev": "tsx src/index.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "qtest",
