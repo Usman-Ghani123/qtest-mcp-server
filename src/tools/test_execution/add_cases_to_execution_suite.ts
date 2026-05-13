@@ -1,5 +1,5 @@
-import { config } from '../../config.js'
-import { qtestFetch } from '../../client.js'
+import { config } from '@/config.js'
+import { qtestFetch } from '@/client.js'
 
 export interface AddTestCasesArgs {
   projectId: string

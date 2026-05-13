@@ -1,6 +1,6 @@
-import { config } from '../../config.js'
-import { qtestFetch } from '../../client.js'
-import type { QTestModule } from '../../types.js'
+import { config } from '@/config.js'
+import { qtestFetch } from '@/client.js'
+import type { QTestModule } from '@/types.js'
 
 export interface CreateModuleArgs {
   projectId: string

@@ -1,6 +1,6 @@
-import { config } from '../../config.js'
-import { qtestFetchGlobal, extractArray } from '../../client.js'
-import type { QTestProject } from '../../types.js'
+import { config } from '@/config.js'
+import { qtestFetchGlobal, extractArray } from '@/client.js'
+import type { QTestProject } from '@/types.js'
 
 export interface ListProjectsArgs {
   projectId?: number

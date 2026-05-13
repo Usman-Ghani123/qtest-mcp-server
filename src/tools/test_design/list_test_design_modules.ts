@@ -1,6 +1,6 @@
-import { config } from '../../config.js'
-import { qtestFetch, extractArray } from '../../client.js'
-import type { QTestFolder } from '../../types.js'
+import { config } from '@/config.js'
+import { qtestFetch, extractArray } from '@/client.js'
+import type { QTestFolder } from '@/types.js'
 
 export interface GetModulesArgs {
   projectId: string

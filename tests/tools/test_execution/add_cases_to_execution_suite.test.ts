@@ -1,8 +1,8 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import * as clientModule from '../../../src/client.js'
+import * as clientModule from '@/client.js'
 
-vi.mock('../../../src/client.js', async (importOriginal) => {
-  const original = await importOriginal<typeof import('../../../src/client.js')>()
+vi.mock('@/client.js', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@/client.js')>()
   return {
     ...original,
     qtestFetch: vi.fn(),
@@ -11,7 +11,7 @@ vi.mock('../../../src/client.js', async (importOriginal) => {
 
 const mockQtestFetch = vi.mocked(clientModule.qtestFetch)
 
-import { addTestCases } from '../../../src/tools/test-execution/add_cases_to_execution_suite.js'
+import { addTestCases } from '@/tools/test_execution/add_cases_to_execution_suite.js'
 
 const testCases = [
   { id: 101, name: 'Login Test' },

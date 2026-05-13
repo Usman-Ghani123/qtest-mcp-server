@@ -1,4 +1,4 @@
-import type { QTestConfig } from './config.js'
+import type { QTestConfig } from '@/config.js'
 
 export type { QTestConfig }
 

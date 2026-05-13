@@ -1,6 +1,6 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { qtestFetch, extractArray } from '../src/client.js'
-import type { QTestConfig } from '../src/client.js'
+import { qtestFetch, extractArray } from '@/client.js'
+import type { QTestConfig } from '@/client.js'
 
 const mockConfig: QTestConfig = {
   baseUrl: 'https://example.qtestnet.com',

@@ -1,6 +1,6 @@
-import { config } from '../../config.js'
-import { qtestFetch, extractArray } from '../../client.js'
-import type { QTestTestCase, QTestProperty } from '../../types.js'
+import { config } from '@/config.js'
+import { qtestFetch, extractArray } from '@/client.js'
+import type { QTestTestCase, QTestProperty } from '@/types.js'
 
 export interface GetTestCasesArgs {
   projectId: string
