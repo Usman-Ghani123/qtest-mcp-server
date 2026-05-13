@@ -1,10 +1,11 @@
 import { config } from '@/config.js'
-import { qtestFetch } from '@/client.js'
-import type { QTestModule } from '@/types.js'
+import { qtestFetch, extractArray } from '@/client.js'
+import type { QTestModule, QTestTestCase } from '@/types.js'
 
 export interface DeleteTestModuleArgs {
   projectId: string
-  id: number
+  id?: number
+  pid?: string
 }
 
 export interface DeleteTestModuleResult {
@@ -12,15 +13,50 @@ export interface DeleteTestModuleResult {
   module: QTestModule
 }
 
+async function deleteModuleRecursive(projectId: string, id: number): Promise<void> {
+  const childrenRaw = await qtestFetch(config, projectId, `/modules?parentId=${id}&size=100`, 'GET')
+  const children = extractArray<QTestModule>(childrenRaw)
+  for (const child of children) {
+    await deleteModuleRecursive(projectId, child.id)
+  }
+
+  let page = 1
+  while (true) {
+    const casesRaw = await qtestFetch(
+      config, projectId,
+      `/test-cases?parentId=${id}&parentType=module&page=${page}&size=100`,
+      'GET'
+    )
+    const cases = extractArray<QTestTestCase>(casesRaw)
+    for (const tc of cases) {
+      await qtestFetch(config, projectId, `/test-cases/${tc.id}`, 'DELETE')
+    }
+    if (cases.length < 100) break
+    page++
+  }
+
+  await qtestFetch(config, projectId, `/modules/${id}`, 'DELETE')
+}
+
 export async function deleteTestModule(
   args: DeleteTestModuleArgs
 ): Promise<DeleteTestModuleResult> {
-  const { projectId, id } = args
+  const { projectId, pid } = args
+  let { id } = args
+
+  if (id === undefined) {
+    if (pid === undefined) throw new Error('Provide either id or pid')
+    const allRaw = await qtestFetch(config, projectId, '/modules', 'GET')
+    const all = extractArray<QTestModule>(allRaw)
+    const match = all.find((m) => m.pid === pid)
+    if (!match) throw new Error(`No test module found with pid "${pid}"`)
+    id = match.id
+  }
 
   const raw = await qtestFetch(config, projectId, `/modules/${id}`, 'GET')
   const moduleInfo = raw as QTestModule
 
-  await qtestFetch(config, projectId, `/modules/${id}`, 'DELETE')
+  await deleteModuleRecursive(projectId, id)
 
   return { deleted: true, module: moduleInfo }
 }

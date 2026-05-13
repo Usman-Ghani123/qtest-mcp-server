@@ -88,6 +88,41 @@ describe('deleteTestCycle', () => {
     )
   })
 
+  it('resolves pid to numeric id before deleting', async () => {
+    const cycles = [
+      { id: 42, name: 'Sprint 3', pid: 'CL-710' },
+      { id: 99, name: 'Other', pid: 'CL-999' },
+    ]
+    mockQtestFetch
+      .mockResolvedValueOnce(cycles)                       // GET /test-cycles (pid lookup)
+      .mockResolvedValueOnce({ id: 42, name: 'Sprint 3' }) // GET /test-cycles/42
+      .mockResolvedValueOnce([])                           // GET suites of 42
+      .mockResolvedValueOnce([])                           // GET sub-cycles of 42
+      .mockResolvedValueOnce(null)                         // DELETE /test-cycles/42
+
+    const result = await deleteTestCycle({ projectId: '1', pid: 'CL-710' })
+    expect(result.cycle).toMatchObject({ id: 42, name: 'Sprint 3' })
+    expect(mockQtestFetch).toHaveBeenNthCalledWith(
+      1, expect.anything(), '1', '/test-cycles', 'GET'
+    )
+    expect(mockQtestFetch).toHaveBeenLastCalledWith(
+      expect.anything(), '1', '/test-cycles/42', 'DELETE'
+    )
+  })
+
+  it('throws when pid matches no cycle', async () => {
+    mockQtestFetch.mockResolvedValueOnce([{ id: 1, name: 'Other', pid: 'CL-001' }])
+    await expect(
+      deleteTestCycle({ projectId: '1', pid: 'CL-999' })
+    ).rejects.toThrow('No test cycle found with pid "CL-999"')
+  })
+
+  it('throws when neither id nor pid is provided', async () => {
+    await expect(
+      deleteTestCycle({ projectId: '1' })
+    ).rejects.toThrow('Provide either id or pid')
+  })
+
   it('recursively deletes child cycles (deepest first) before the parent', async () => {
     const parent = { id: 10, name: 'Parent' }
     const child = { id: 11, name: 'Child' }

@@ -10,6 +10,7 @@ export interface QTestProject {
 export interface QTestModule {
   id: number
   name: string
+  pid?: string
   parentId?: number
 }
 
@@ -44,6 +45,8 @@ export interface QTestTestSuite {
 export interface QTestTestCycle {
   id: number
   name: string
+  pid?: string
   parentId?: number
   description?: string
+  children?: QTestTestCycle[]
 }

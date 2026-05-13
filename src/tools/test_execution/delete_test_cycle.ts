@@ -4,7 +4,8 @@ import type { QTestTestCycle, QTestTestRun, QTestTestSuite } from '@/types.js'
 
 export interface DeleteTestCycleArgs {
   projectId: string
-  id: number
+  id?: number
+  pid?: string
 }
 
 export interface DeleteTestCycleResult {
@@ -48,7 +49,17 @@ async function deleteRecursive(projectId: string, id: number): Promise<void> {
 export async function deleteTestCycle(
   args: DeleteTestCycleArgs
 ): Promise<DeleteTestCycleResult> {
-  const { projectId, id } = args
+  const { projectId, pid } = args
+  let { id } = args
+
+  if (id === undefined) {
+    if (pid === undefined) throw new Error('Provide either id or pid')
+    const allRaw = await qtestFetch(config, projectId, '/test-cycles', 'GET')
+    const all = extractArray<QTestTestCycle>(allRaw)
+    const match = all.find((c) => c.pid === pid)
+    if (!match) throw new Error(`No test cycle found with pid "${pid}"`)
+    id = match.id
+  }
 
   const raw = await qtestFetch(config, projectId, `/test-cycles/${id}`, 'GET')
   const cycleInfo = raw as QTestTestCycle
