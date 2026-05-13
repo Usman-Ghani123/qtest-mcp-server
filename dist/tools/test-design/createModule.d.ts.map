@@ -1,1 +1,0 @@
-{"version":3,"file":"createModule.d.ts","sourceRoot":"","sources":["../../../src/tools/test-design/createModule.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,gBAAgB,CAAA;AAEjD,MAAM,WAAW,gBAAgB;IAC/B,SAAS,EAAE,MAAM,CAAA;IACjB,IAAI,EAAE,MAAM,CAAA;IACZ,QAAQ,CAAC,EAAE,MAAM,CAAA;CAClB;AAED,wBAAsB,YAAY,CAAC,IAAI,EAAE,gBAAgB,GAAG,OAAO,CAAC,WAAW,CAAC,CAS/E"}

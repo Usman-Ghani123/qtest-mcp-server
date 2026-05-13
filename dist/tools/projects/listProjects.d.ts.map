@@ -1,1 +1,0 @@
-{"version":3,"file":"listProjects.d.ts","sourceRoot":"","sources":["../../../src/tools/projects/listProjects.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,YAAY,EAAE,MAAM,gBAAgB,CAAA;AAElD,MAAM,WAAW,gBAAgB;IAC/B,SAAS,CAAC,EAAE,MAAM,CAAA;CACnB;AAED,wBAAsB,YAAY,CAAC,IAAI,EAAE,gBAAgB,GAAG,OAAO,CAAC,YAAY,GAAG,YAAY,EAAE,CAAC,CAUjG"}
