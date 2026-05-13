@@ -1,6 +1,6 @@
 # qtest-mcp-server
 
-> **Disclaimer:** This is an **unofficial**, community-built MCP server for [qTest Manager](https://www.tricentis.com/products/unified-test-management-qtest) by Tricentis. It is not affiliated with, endorsed by, or supported by Tricentis in any way. Use at your own risk. All product names, logos, and brands are the property of their respective owners.
+> **Disclaimer:** This is an unofficial, community-built MCP server for qTest Manager. Not affiliated with or endorsed by Tricentis.
 
 An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets AI assistants (Claude, etc.) interact with qTest Manager — browse projects, manage test design modules, and build test execution cycles — all through natural language.
 
