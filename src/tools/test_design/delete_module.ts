@@ -1,6 +1,7 @@
 import { config } from '@/config.js'
 import { qtestFetch, extractArray } from '@/client.js'
 import type { QTestModule, QTestTestCase } from '@/types.js'
+import { parsePid } from '@/utils.js'
 
 export interface DeleteModuleArgs {
   projectId: string
@@ -46,11 +47,7 @@ export async function deleteModule(
 
   if (id === undefined) {
     if (pid === undefined) throw new Error('Provide either id or pid')
-    const allRaw = await qtestFetch(config, projectId, '/modules', 'GET')
-    const all = extractArray<QTestModule>(allRaw)
-    const match = all.find((m) => m.pid === pid)
-    if (!match) throw new Error(`No test module found with pid "${pid}"`)
-    id = match.id
+    id = parsePid(pid)
   }
 
   const raw = await qtestFetch(config, projectId, `/modules/${id}`, 'GET')

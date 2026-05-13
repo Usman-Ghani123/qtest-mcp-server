@@ -1,6 +1,7 @@
 import { config } from '@/config.js'
 import { qtestFetch, extractArray } from '@/client.js'
 import type { QTestTestCycle, QTestTestRun, QTestTestSuite } from '@/types.js'
+import { parsePid } from '@/utils.js'
 
 export interface DeleteTestCycleArgs {
   projectId: string
@@ -54,11 +55,7 @@ export async function deleteTestCycle(
 
   if (id === undefined) {
     if (pid === undefined) throw new Error('Provide either id or pid')
-    const allRaw = await qtestFetch(config, projectId, '/test-cycles', 'GET')
-    const all = extractArray<QTestTestCycle>(allRaw)
-    const match = all.find((c) => c.pid === pid)
-    if (!match) throw new Error(`No test cycle found with pid "${pid}"`)
-    id = match.id
+    id = parsePid(pid)
   }
 
   const raw = await qtestFetch(config, projectId, `/test-cycles/${id}`, 'GET')

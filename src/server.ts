@@ -20,10 +20,11 @@ server.registerTool(
   'list-test-cases',
   {
     description:
-      'Test Design — fetch test cases from a qTest module with optional property filters (Type, Status, Priority, version, etc.)',
+      'Test Design — fetch test cases from a qTest module with optional property filters (Type, Status, Priority, version, etc.). Identify the module via moduleId (numeric) or modulePid (e.g. "MD-448") — at least one required.',
     inputSchema: {
       projectId: z.string().describe('Numeric project ID as string'),
-      moduleId: z.number().int().describe('ID of the module to fetch test cases from'),
+      moduleId: z.number().int().optional().describe('Numeric ID of the module'),
+      modulePid: z.string().optional().describe('Module PID (e.g. "MD-448"); alternative to moduleId'),
       filters: z
         .array(
           z.object({
@@ -35,8 +36,8 @@ server.registerTool(
         .describe('Filter by fields (AND logic); omit to return all'),
     },
   },
-  async ({ projectId, moduleId, filters }) => {
-    const result = await getTestCases({ projectId, moduleId, filters })
+  async ({ projectId, moduleId, modulePid, filters }) => {
+    const result = await getTestCases({ projectId, moduleId, modulePid, filters })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
@@ -49,11 +50,12 @@ server.registerTool(
     inputSchema: {
       projectId: z.string(),
       parentId: z.number().int().optional().describe('List children of this module ID'),
+      parentPid: z.string().optional().describe('List children by module PID (e.g. "MD-448"); alternative to parentId'),
       query: z.string().optional().describe('Search modules by name'),
     },
   },
-  async ({ projectId, parentId, query }) => {
-    const result = await listModules({ projectId, parentId, query })
+  async ({ projectId, parentId, parentPid, query }) => {
+    const result = await listModules({ projectId, parentId, parentPid, query })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
@@ -66,10 +68,11 @@ server.registerTool(
       projectId: z.string(),
       name: z.string().describe('Name of the new module'),
       parentId: z.number().int().optional().describe('Parent module ID; omit to create at root'),
+      parentPid: z.string().optional().describe('Parent module PID (e.g. "MD-448"); alternative to parentId'),
     },
   },
-  async ({ projectId, name, parentId }) => {
-    const result = await createModule({ projectId, name, parentId })
+  async ({ projectId, name, parentId, parentPid }) => {
+    const result = await createModule({ projectId, name, parentId, parentPid })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
@@ -87,10 +90,11 @@ server.registerTool(
         .int()
         .optional()
         .describe('Parent test cycle ID; omit to create at root'),
+      parentPid: z.string().optional().describe('Parent test cycle PID (e.g. "CL-710"); alternative to parentId'),
     },
   },
-  async ({ projectId, name, parentId }) => {
-    const result = await createExecutionFolder({ projectId, name, parentId })
+  async ({ projectId, name, parentId, parentPid }) => {
+    const result = await createExecutionFolder({ projectId, name, parentId, parentPid })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )

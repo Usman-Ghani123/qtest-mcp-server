@@ -1,10 +1,12 @@
 import { config } from '@/config.js'
 import { qtestFetch } from '@/client.js'
+import { parsePid } from '@/utils.js'
 
 export interface CreateExecutionFolderArgs {
   projectId: string
   name: string
   parentId?: number
+  parentPid?: string
 }
 
 export interface ExecutionFolder {
@@ -16,7 +18,12 @@ export interface ExecutionFolder {
 export async function createExecutionFolder(
   args: CreateExecutionFolderArgs
 ): Promise<ExecutionFolder> {
-  const { projectId, name, parentId } = args
+  let { parentId } = args
+  const { projectId, name, parentPid } = args
+
+  if (parentId === undefined && parentPid !== undefined) {
+    parentId = parsePid(parentPid)
+  }
   const endpoint =
     parentId !== undefined
       ? `/test-cycles?parentId=${parentId}&parentType=test-cycle`

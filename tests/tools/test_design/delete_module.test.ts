@@ -61,30 +61,27 @@ describe('deleteModule', () => {
     ).rejects.toThrow('HTTP 404: Not Found')
   })
 
-  it('resolves numeric id from pid when only pid is provided', async () => {
+  it('resolves pid to id O(1) — no fetch-all call', async () => {
     const mod = { id: 20, name: 'Login Tests', pid: 'MD-20' }
     mockQtestFetch
-      .mockResolvedValueOnce([mod])  // GET /modules → list to resolve pid
-      .mockResolvedValueOnce(mod)    // GET /modules/20
-      .mockResolvedValueOnce([])     // GET children → []
-      .mockResolvedValueOnce([])     // GET test-cases → []
-      .mockResolvedValueOnce(null)   // DELETE /modules/20
+      .mockResolvedValueOnce(mod)   // GET /modules/20
+      .mockResolvedValueOnce([])    // GET children → []
+      .mockResolvedValueOnce([])    // GET test-cases → []
+      .mockResolvedValueOnce(null)  // DELETE /modules/20
 
     const result = await deleteModule({ projectId: '1', pid: 'MD-20' })
     expect(result).toEqual({ deleted: true, module: mod })
+    expect(mockQtestFetch).toHaveBeenCalledTimes(4)
     expect(mockQtestFetch).toHaveBeenNthCalledWith(
-      1, expect.anything(), '1', '/modules', 'GET'
-    )
-    expect(mockQtestFetch).toHaveBeenNthCalledWith(
-      2, expect.anything(), '1', '/modules/20', 'GET'
+      1, expect.anything(), '1', '/modules/20', 'GET'
     )
   })
 
-  it('throws when pid does not match any module', async () => {
-    mockQtestFetch.mockResolvedValueOnce([{ id: 20, name: 'Other', pid: 'MD-20' }])
+  it('propagates 404 when pid resolves to non-existent module', async () => {
+    mockQtestFetch.mockRejectedValueOnce(new Error('HTTP 404: Not Found'))
     await expect(
       deleteModule({ projectId: '1', pid: 'MD-999' })
-    ).rejects.toThrow('No test module found with pid "MD-999"')
+    ).rejects.toThrow('HTTP 404: Not Found')
   })
 
   it('throws when neither id nor pid is provided', async () => {

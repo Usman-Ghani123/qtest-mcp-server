@@ -88,33 +88,27 @@ describe('deleteTestCycle', () => {
     )
   })
 
-  it('resolves pid to numeric id before deleting', async () => {
-    const cycles = [
-      { id: 42, name: 'Sprint 3', pid: 'CL-710' },
-      { id: 99, name: 'Other', pid: 'CL-999' },
-    ]
+  it('resolves pid to id O(1) — no fetch-all call', async () => {
+    const cycle = { id: 710, name: 'Sprint 3', pid: 'CL-710' }
     mockQtestFetch
-      .mockResolvedValueOnce(cycles)                       // GET /test-cycles (pid lookup)
-      .mockResolvedValueOnce({ id: 42, name: 'Sprint 3' }) // GET /test-cycles/42
-      .mockResolvedValueOnce([])                           // GET suites of 42
-      .mockResolvedValueOnce([])                           // GET sub-cycles of 42
-      .mockResolvedValueOnce(null)                         // DELETE /test-cycles/42
+      .mockResolvedValueOnce(cycle) // GET /test-cycles/710
+      .mockResolvedValueOnce([])    // GET suites of 710 → []
+      .mockResolvedValueOnce([])    // GET sub-cycles of 710 → []
+      .mockResolvedValueOnce(null)  // DELETE /test-cycles/710
 
     const result = await deleteTestCycle({ projectId: '1', pid: 'CL-710' })
-    expect(result.cycle).toMatchObject({ id: 42, name: 'Sprint 3' })
+    expect(result).toEqual({ deleted: true, cycle })
+    expect(mockQtestFetch).toHaveBeenCalledTimes(4)
     expect(mockQtestFetch).toHaveBeenNthCalledWith(
-      1, expect.anything(), '1', '/test-cycles', 'GET'
-    )
-    expect(mockQtestFetch).toHaveBeenLastCalledWith(
-      expect.anything(), '1', '/test-cycles/42', 'DELETE'
+      1, expect.anything(), '1', '/test-cycles/710', 'GET'
     )
   })
 
-  it('throws when pid matches no cycle', async () => {
-    mockQtestFetch.mockResolvedValueOnce([{ id: 1, name: 'Other', pid: 'CL-001' }])
+  it('propagates 404 when pid resolves to non-existent cycle', async () => {
+    mockQtestFetch.mockRejectedValueOnce(new Error('HTTP 404: Not Found'))
     await expect(
       deleteTestCycle({ projectId: '1', pid: 'CL-999' })
-    ).rejects.toThrow('No test cycle found with pid "CL-999"')
+    ).rejects.toThrow('HTTP 404: Not Found')
   })
 
   it('throws when neither id nor pid is provided', async () => {

@@ -1,15 +1,22 @@
 import { config } from '@/config.js'
 import { qtestFetch, extractArray } from '@/client.js'
 import type { QTestFolder } from '@/types.js'
+import { parsePid } from '@/utils.js'
 
 export interface ListModulesArgs {
   projectId: string
   parentId?: number
+  parentPid?: string
   query?: string
 }
 
 export async function listModules(args: ListModulesArgs): Promise<QTestFolder[]> {
-  const { projectId, parentId, query } = args
+  let { parentId } = args
+  const { projectId, parentPid, query } = args
+
+  if (parentId === undefined && parentPid !== undefined) {
+    parentId = parsePid(parentPid)
+  }
   let endpoint: string
 
   if (query !== undefined) {

@@ -13,6 +13,7 @@ const mockQtestFetch = vi.mocked(clientModule.qtestFetch)
 
 import { getTestCases } from '@/tools/test_design/list_test_cases.js'
 
+
 const makeTC = (id: number, typeValue: string) => ({
   id,
   name: `TC-${id}`,
@@ -134,5 +135,50 @@ describe('getTestCases', () => {
     mockQtestFetch.mockResolvedValueOnce({ items: [makeTC(1, 'Manual')] })
     const result = await getTestCases({ projectId: '1', moduleId: 10 })
     expect(result).toHaveLength(1)
+  })
+})
+
+describe('getTestCases — modulePid path', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('resolves modulePid to numeric id with no extra API call', async () => {
+    mockQtestFetch.mockResolvedValueOnce(
+      Array.from({ length: 5 }, (_, i) => makeTC(i, 'Manual'))
+    )
+    const result = await getTestCases({ projectId: '1', modulePid: 'MD-10' })
+    expect(mockQtestFetch).toHaveBeenCalledTimes(1)
+    expect(mockQtestFetch).toHaveBeenCalledWith(
+      expect.anything(), '1',
+      '/test-cases?parentId=10&parentType=module&page=1&size=100', 'GET'
+    )
+    expect(result).toHaveLength(5)
+  })
+
+  it('modulePid and filters work together', async () => {
+    const tcs = [makeTC(1, 'Manual'), makeTC(2, 'Automated')]
+    mockQtestFetch.mockResolvedValueOnce(tcs)
+    const result = await getTestCases({
+      projectId: '1',
+      modulePid: 'MD-448',
+      filters: [{ field: 'Type', value: 'Automated' }],
+    })
+    expect(result).toHaveLength(1)
+    expect(result[0].id).toBe(2)
+  })
+
+  it('throws when neither moduleId nor modulePid is provided', async () => {
+    await expect(
+      getTestCases({ projectId: '1' })
+    ).rejects.toThrow('Provide either moduleId or modulePid')
+    expect(mockQtestFetch).not.toHaveBeenCalled()
+  })
+
+  it('throws on malformed modulePid before any API call', async () => {
+    await expect(
+      getTestCases({ projectId: '1', modulePid: 'MD-notanumber' })
+    ).rejects.toThrow('Invalid pid format')
+    expect(mockQtestFetch).not.toHaveBeenCalled()
   })
 })
