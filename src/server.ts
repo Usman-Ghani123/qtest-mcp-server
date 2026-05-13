@@ -5,7 +5,7 @@ import { getTestCases } from '@/tools/test_design/list_test_cases.js'
 import { getModules } from '@/tools/test_design/list_test_design_modules.js'
 import { createModule } from '@/tools/test_design/create_test_design_module.js'
 import { createExecutionFolder } from '@/tools/test_execution/create_test_cycle.js'
-import { addTestCases } from '@/tools/test_execution/add_cases_to_execution_suite.js'
+import { addTestCases } from '@/tools/test_execution/add_test_cases.js'
 import { listProjects } from '@/tools/projects/list_projects.js'
 
 export const server = new McpServer(
@@ -93,7 +93,7 @@ server.registerTool(
 )
 
 server.registerTool(
-  'add-cases-to-execution-suite',
+  'add-test-cases',
   {
     description:
       'Test Execution — add test cases as test runs into a qTest Test Execution suite (inside a test cycle)',

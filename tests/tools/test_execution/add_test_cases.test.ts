@@ -11,7 +11,7 @@ vi.mock('@/client.js', async (importOriginal) => {
 
 const mockQtestFetch = vi.mocked(clientModule.qtestFetch)
 
-import { addTestCases } from '@/tools/test_execution/add_cases_to_execution_suite.js'
+import { addTestCases } from '@/tools/test_execution/add_test_cases.js'
 
 const testCases = [
   { id: 101, name: 'Login Test' },

@@ -3,4 +3,4 @@ qtest-mcp-server-prompt.md
 .env
 .mcp.json
 CLAUDE.md
-tsconfig.build.json
+dist/
