@@ -2,13 +2,13 @@ import { config } from '@/config.js'
 import { qtestFetch, extractArray } from '@/client.js'
 import type { QTestFolder } from '@/types.js'
 
-export interface GetModulesArgs {
+export interface ListModulesArgs {
   projectId: string
   parentId?: number
   query?: string
 }
 
-export async function getModules(args: GetModulesArgs): Promise<QTestFolder[]> {
+export async function listModules(args: ListModulesArgs): Promise<QTestFolder[]> {
   const { projectId, parentId, query } = args
   let endpoint: string
 

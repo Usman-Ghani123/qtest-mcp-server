@@ -11,16 +11,16 @@ vi.mock('@/client.js', async (importOriginal) => {
 
 const mockQtestFetch = vi.mocked(clientModule.qtestFetch)
 
-import { getModules } from '@/tools/test_design/list_test_design_modules.js'
+import { listModules } from '@/tools/test_design/list_modules.js'
 
-describe('getModules', () => {
+describe('listModules', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   it('uses search endpoint when query is provided', async () => {
     mockQtestFetch.mockResolvedValue({ items: [] })
-    await getModules({ projectId: '1', query: 'Smoke Tests' })
+    await listModules({ projectId: '1', query: 'Smoke Tests' })
     expect(mockQtestFetch).toHaveBeenCalledWith(
       expect.anything(),
       '1',
@@ -31,7 +31,7 @@ describe('getModules', () => {
 
   it('uses parentId endpoint when parentId is provided', async () => {
     mockQtestFetch.mockResolvedValue([])
-    await getModules({ projectId: '1', parentId: 42 })
+    await listModules({ projectId: '1', parentId: 42 })
     expect(mockQtestFetch).toHaveBeenCalledWith(
       expect.anything(),
       '1',
@@ -42,7 +42,7 @@ describe('getModules', () => {
 
   it('uses plain listing endpoint when neither query nor parentId provided', async () => {
     mockQtestFetch.mockResolvedValue([])
-    await getModules({ projectId: '1' })
+    await listModules({ projectId: '1' })
     expect(mockQtestFetch).toHaveBeenCalledWith(
       expect.anything(),
       '1',
@@ -53,13 +53,13 @@ describe('getModules', () => {
 
   it('applies extractArray to response with items wrapper', async () => {
     mockQtestFetch.mockResolvedValue({ items: [{ id: 5, name: 'Module A' }] })
-    const result = await getModules({ projectId: '1' })
+    const result = await listModules({ projectId: '1' })
     expect(result).toEqual([{ id: 5, name: 'Module A' }])
   })
 
   it('applies extractArray to raw array response', async () => {
     mockQtestFetch.mockResolvedValue([{ id: 7, name: 'Module B' }])
-    const result = await getModules({ projectId: '1' })
+    const result = await listModules({ projectId: '1' })
     expect(result).toEqual([{ id: 7, name: 'Module B' }])
   })
 })

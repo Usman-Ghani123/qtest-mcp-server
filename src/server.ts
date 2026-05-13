@@ -2,14 +2,14 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
 import { getTestCases } from '@/tools/test_design/list_test_cases.js'
-import { getModules } from '@/tools/test_design/list_test_design_modules.js'
-import { createModule } from '@/tools/test_design/create_test_design_module.js'
+import { listModules } from '@/tools/test_design/list_modules.js'
+import { createModule } from '@/tools/test_design/create_module.js'
 import { createExecutionFolder } from '@/tools/test_execution/create_test_cycle.js'
 import { addTestCases } from '@/tools/test_execution/add_test_cases.js'
 import { listProjects } from '@/tools/projects/list_projects.js'
 import { listTestCycles } from '@/tools/test_execution/list_test_cycle.js'
 import { deleteTestCycle } from '@/tools/test_execution/delete_test_cycle.js'
-import { deleteTestModule } from '@/tools/test_design/delete_test_module.js'
+import { deleteModule } from '@/tools/test_design/delete_module.js'
 
 export const server = new McpServer(
   { name: 'qtest-mcp-server', version: '0.1.0' },
@@ -42,7 +42,7 @@ server.registerTool(
 )
 
 server.registerTool(
-  'list-test-design-modules',
+  'list-modules',
   {
     description:
       'Test Design — list qTest Test Design modules. Pass query to search by name, parentId to list children, or neither for root-level listing',
@@ -53,13 +53,13 @@ server.registerTool(
     },
   },
   async ({ projectId, parentId, query }) => {
-    const result = await getModules({ projectId, parentId, query })
+    const result = await listModules({ projectId, parentId, query })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
 
 server.registerTool(
-  'create-test-design-module',
+  'create-module',
   {
     description: 'Test Design — create a new module in qTest Test Design to organise test cases',
     inputSchema: {
@@ -169,7 +169,7 @@ server.registerTool(
 )
 
 server.registerTool(
-  'delete-test-module',
+  'delete-module',
   {
     description:
       'Test Design — delete a qTest test module by id. Cascades to all child modules and test cases automatically',
@@ -180,7 +180,7 @@ server.registerTool(
     },
   },
   async ({ projectId, id, pid }) => {
-    const result = await deleteTestModule({ projectId, id, pid })
+    const result = await deleteModule({ projectId, id, pid })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )

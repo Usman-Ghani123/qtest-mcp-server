@@ -2,13 +2,13 @@ import { config } from '@/config.js'
 import { qtestFetch, extractArray } from '@/client.js'
 import type { QTestModule, QTestTestCase } from '@/types.js'
 
-export interface DeleteTestModuleArgs {
+export interface DeleteModuleArgs {
   projectId: string
   id?: number
   pid?: string
 }
 
-export interface DeleteTestModuleResult {
+export interface DeleteModuleResult {
   deleted: true
   module: QTestModule
 }
@@ -38,9 +38,9 @@ async function deleteModuleRecursive(projectId: string, id: number): Promise<voi
   await qtestFetch(config, projectId, `/modules/${id}`, 'DELETE')
 }
 
-export async function deleteTestModule(
-  args: DeleteTestModuleArgs
-): Promise<DeleteTestModuleResult> {
+export async function deleteModule(
+  args: DeleteModuleArgs
+): Promise<DeleteModuleResult> {
   const { projectId, pid } = args
   let { id } = args
 

@@ -11,7 +11,7 @@ vi.mock('@/client.js', async (importOriginal) => {
 
 const mockQtestFetch = vi.mocked(clientModule.qtestFetch)
 
-import { createModule } from '@/tools/test_design/create_test_design_module.js'
+import { createModule } from '@/tools/test_design/create_module.js'
 
 describe('createModule', () => {
   beforeEach(() => {
