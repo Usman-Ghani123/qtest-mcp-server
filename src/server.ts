@@ -1,12 +1,12 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
-import { getTestCases } from './tools/test-design/getTestCases.js'
-import { getModules } from './tools/test-design/getModules.js'
-import { createModule } from './tools/test-design/createModule.js'
-import { createExecutionFolder } from './tools/test-execution/createExecutionFolder.js'
-import { addTestCases } from './tools/test-execution/addTestCases.js'
-import { listProjects } from './tools/projects/listProjects.js'
+import { getTestCases } from './tools/test-design/list_test_cases.js'
+import { getModules } from './tools/test-design/list_test_design_modules.js'
+import { createModule } from './tools/test-design/create_test_design_module.js'
+import { createExecutionFolder } from './tools/test-execution/create_test_cycle.js'
+import { addTestCases } from './tools/test-execution/add_cases_to_execution_suite.js'
+import { listProjects } from './tools/projects/list_projects.js'
 
 export const server = new McpServer(
   { name: 'qtest-mcp-server', version: '0.1.0' },

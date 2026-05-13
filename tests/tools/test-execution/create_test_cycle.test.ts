@@ -11,7 +11,7 @@ vi.mock('../../../src/client.js', async (importOriginal) => {
 
 const mockQtestFetch = vi.mocked(clientModule.qtestFetch)
 
-import { createExecutionFolder } from '../../../src/tools/test-execution/createExecutionFolder.js'
+import { createExecutionFolder } from '../../../src/tools/test-execution/create_test_cycle.js'
 
 describe('createExecutionFolder', () => {
   beforeEach(() => {

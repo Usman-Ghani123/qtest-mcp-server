@@ -11,7 +11,7 @@ vi.mock('../../../src/client.js', async (importOriginal) => {
 
 const mockQtestFetch = vi.mocked(clientModule.qtestFetch)
 
-import { getTestCases } from '../../../src/tools/test-design/getTestCases.js'
+import { getTestCases } from '../../../src/tools/test-design/list_test_cases.js'
 
 const makeTC = (id: number, typeValue: string) => ({
   id,

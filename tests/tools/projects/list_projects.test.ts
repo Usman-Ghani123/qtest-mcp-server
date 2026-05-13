@@ -11,7 +11,7 @@ vi.mock('../../../src/client.js', async (importOriginal) => {
 
 const mockQtestFetchGlobal = vi.mocked(clientModule.qtestFetchGlobal)
 
-import { listProjects } from '../../../src/tools/projects/listProjects.js'
+import { listProjects } from '../../../src/tools/projects/list_projects.js'
 
 describe('listProjects', () => {
   beforeEach(() => {
