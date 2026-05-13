@@ -35,3 +35,10 @@ export interface QTestTestRun {
   id: number
   name: string
 }
+
+export interface QTestTestCycle {
+  id: number
+  name: string
+  parentId?: number
+  description?: string
+}

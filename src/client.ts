@@ -5,7 +5,7 @@ export type { QTestConfig }
 export async function qtestFetchGlobal(
   config: QTestConfig,
   endpoint: string,
-  method: 'GET' | 'POST',
+  method: 'GET' | 'POST' | 'DELETE',
   body?: unknown
 ): Promise<unknown> {
   const url = `${config.baseUrl}/api/v3${endpoint}`
@@ -28,7 +28,7 @@ export async function qtestFetch(
   config: QTestConfig,
   projectId: string,
   endpoint: string,
-  method: 'GET' | 'POST',
+  method: 'GET' | 'POST' | 'DELETE',
   body?: unknown
 ): Promise<unknown> {
   const url = `${config.baseUrl}/api/v3/projects/${projectId}${endpoint}`
