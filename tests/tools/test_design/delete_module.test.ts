@@ -61,35 +61,6 @@ describe('deleteModule', () => {
     ).rejects.toThrow('HTTP 404: Not Found')
   })
 
-  it('resolves pid to id O(1) — no fetch-all call', async () => {
-    const mod = { id: 20, name: 'Login Tests', pid: 'MD-20' }
-    mockQtestFetch
-      .mockResolvedValueOnce(mod)   // GET /modules/20
-      .mockResolvedValueOnce([])    // GET children → []
-      .mockResolvedValueOnce([])    // GET test-cases → []
-      .mockResolvedValueOnce(null)  // DELETE /modules/20
-
-    const result = await deleteModule({ projectId: '1', pid: 'MD-20' })
-    expect(result).toEqual({ deleted: true, module: mod })
-    expect(mockQtestFetch).toHaveBeenCalledTimes(4)
-    expect(mockQtestFetch).toHaveBeenNthCalledWith(
-      1, expect.anything(), '1', '/modules/20', 'GET'
-    )
-  })
-
-  it('propagates 404 when pid resolves to non-existent module', async () => {
-    mockQtestFetch.mockRejectedValueOnce(new Error('HTTP 404: Not Found'))
-    await expect(
-      deleteModule({ projectId: '1', pid: 'MD-999' })
-    ).rejects.toThrow('HTTP 404: Not Found')
-  })
-
-  it('throws when neither id nor pid is provided', async () => {
-    await expect(
-      deleteModule({ projectId: '1' })
-    ).rejects.toThrow('Provide either id or pid')
-  })
-
   it('deletes test cases before deleting the module', async () => {
     const mod = { id: 20, name: 'Login Tests' }
     const tc1 = { id: 101, name: 'TC 1', properties: [] }

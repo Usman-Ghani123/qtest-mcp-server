@@ -71,26 +71,6 @@ describe('listTestCycles', () => {
     expect(result).toEqual([{ id: 5, name: 'Release' }])
   })
 
-  it('resolves pid to id O(1) and fetches directly', async () => {
-    const cycle = { id: 200, name: 'Sprint 2', pid: 'CL-200' }
-    mockQtestFetch
-      .mockResolvedValueOnce(cycle) // GET /test-cycles/200
-      .mockResolvedValueOnce([])    // GET children → []
-    const result = await listTestCycles({ projectId: '1', pid: 'CL-200' })
-    expect(mockQtestFetch).toHaveBeenCalledTimes(2)
-    expect(mockQtestFetch).toHaveBeenNthCalledWith(
-      1, expect.anything(), '1', '/test-cycles/200', 'GET'
-    )
-    expect(result).toEqual(cycle)
-  })
-
-  it('propagates 404 when pid resolves to non-existent cycle', async () => {
-    mockQtestFetch.mockRejectedValueOnce(new Error('HTTP 404: Not Found'))
-    await expect(
-      listTestCycles({ projectId: '1', pid: 'CL-999' })
-    ).rejects.toThrow('HTTP 404: Not Found')
-  })
-
   it('embeds children tree when cycle has nested children (id lookup)', async () => {
     const parent = { id: 10, name: 'Sprint 1' }
     const child = { id: 11, name: 'Child Cycle' }
@@ -100,17 +80,6 @@ describe('listTestCycles', () => {
       .mockResolvedValueOnce([])      // GET children of 11 → []
     const result = await listTestCycles({ projectId: '1', id: 10 })
     expect(result).toEqual({ ...parent, children: [child] })
-  })
-
-  it('embeds children tree for pid-matched cycle', async () => {
-    const cycle = { id: 100, name: 'Sprint 1', pid: 'CL-100' }
-    const child = { id: 11, name: 'Child Cycle' }
-    mockQtestFetch
-      .mockResolvedValueOnce(cycle)   // GET /test-cycles/100
-      .mockResolvedValueOnce([child]) // GET children of 100 → [child]
-      .mockResolvedValueOnce([])      // GET children of 11 → []
-    const result = await listTestCycles({ projectId: '1', pid: 'CL-100' })
-    expect(result).toEqual({ ...cycle, children: [child] })
   })
 
   it('omits children property when cycle has no children', async () => {

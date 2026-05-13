@@ -88,35 +88,6 @@ describe('deleteTestCycle', () => {
     )
   })
 
-  it('resolves pid to id O(1) — no fetch-all call', async () => {
-    const cycle = { id: 710, name: 'Sprint 3', pid: 'CL-710' }
-    mockQtestFetch
-      .mockResolvedValueOnce(cycle) // GET /test-cycles/710
-      .mockResolvedValueOnce([])    // GET suites of 710 → []
-      .mockResolvedValueOnce([])    // GET sub-cycles of 710 → []
-      .mockResolvedValueOnce(null)  // DELETE /test-cycles/710
-
-    const result = await deleteTestCycle({ projectId: '1', pid: 'CL-710' })
-    expect(result).toEqual({ deleted: true, cycle })
-    expect(mockQtestFetch).toHaveBeenCalledTimes(4)
-    expect(mockQtestFetch).toHaveBeenNthCalledWith(
-      1, expect.anything(), '1', '/test-cycles/710', 'GET'
-    )
-  })
-
-  it('propagates 404 when pid resolves to non-existent cycle', async () => {
-    mockQtestFetch.mockRejectedValueOnce(new Error('HTTP 404: Not Found'))
-    await expect(
-      deleteTestCycle({ projectId: '1', pid: 'CL-999' })
-    ).rejects.toThrow('HTTP 404: Not Found')
-  })
-
-  it('throws when neither id nor pid is provided', async () => {
-    await expect(
-      deleteTestCycle({ projectId: '1' })
-    ).rejects.toThrow('Provide either id or pid')
-  })
-
   it('recursively deletes child cycles (deepest first) before the parent', async () => {
     const parent = { id: 10, name: 'Parent' }
     const child = { id: 11, name: 'Child' }

@@ -1,12 +1,10 @@
 import { config } from '@/config.js'
 import { qtestFetch, extractArray } from '@/client.js'
 import type { QTestTestCycle, QTestTestRun, QTestTestSuite } from '@/types.js'
-import { parsePid } from '@/utils.js'
 
 export interface DeleteTestCycleArgs {
   projectId: string
-  id?: number
-  pid?: string
+  id: number
 }
 
 export interface DeleteTestCycleResult {
@@ -50,13 +48,7 @@ async function deleteRecursive(projectId: string, id: number): Promise<void> {
 export async function deleteTestCycle(
   args: DeleteTestCycleArgs
 ): Promise<DeleteTestCycleResult> {
-  const { projectId, pid } = args
-  let { id } = args
-
-  if (id === undefined) {
-    if (pid === undefined) throw new Error('Provide either id or pid')
-    id = parsePid(pid)
-  }
+  const { projectId, id } = args
 
   const raw = await qtestFetch(config, projectId, `/test-cycles/${id}`, 'GET')
   const cycleInfo = raw as QTestTestCycle

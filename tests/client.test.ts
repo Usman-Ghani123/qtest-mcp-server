@@ -22,7 +22,9 @@ describe('qtestFetch', () => {
   it('constructs the correct URL', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: async () => ({}),
+      status: 200,
+      headers: { get: vi.fn().mockReturnValue(null) },
+      text: async () => '{}',
     })
     await qtestFetch(mockConfig, '12345', '/modules?size=100', 'GET')
     expect(mockFetch).toHaveBeenCalledWith(
@@ -32,7 +34,7 @@ describe('qtestFetch', () => {
   })
 
   it('includes Bearer token in Authorization header', async () => {
-    mockFetch.mockResolvedValue({ ok: true, json: async () => ({}) })
+    mockFetch.mockResolvedValue({ ok: true, status: 200, headers: { get: vi.fn().mockReturnValue(null) }, text: async () => '{}' })
     await qtestFetch(mockConfig, '12345', '/modules', 'GET')
     expect(mockFetch).toHaveBeenCalledWith(
       expect.any(String),
@@ -65,7 +67,7 @@ describe('qtestFetch', () => {
   })
 
   it('sends body as JSON for POST', async () => {
-    mockFetch.mockResolvedValue({ ok: true, json: async () => ({}) })
+    mockFetch.mockResolvedValue({ ok: true, status: 200, headers: { get: vi.fn().mockReturnValue(null) }, text: async () => '{}' })
     await qtestFetch(mockConfig, '1', '/modules', 'POST', { name: 'My Module' })
     expect(mockFetch).toHaveBeenCalledWith(
       expect.any(String),

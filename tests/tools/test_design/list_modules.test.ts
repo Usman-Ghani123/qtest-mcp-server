@@ -63,25 +63,3 @@ describe('listModules', () => {
     expect(result).toEqual([{ id: 7, name: 'Module B' }])
   })
 })
-
-describe('listModules — parentPid path', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  it('resolves parentPid O(1) — no extra API call', async () => {
-    mockQtestFetch.mockResolvedValue([])
-    await listModules({ projectId: '1', parentPid: 'MD-448' })
-    expect(mockQtestFetch).toHaveBeenCalledTimes(1)
-    expect(mockQtestFetch).toHaveBeenCalledWith(
-      expect.anything(), '1', '/modules?parentId=448&size=100', 'GET'
-    )
-  })
-
-  it('throws on malformed parentPid before any API call', async () => {
-    await expect(
-      listModules({ projectId: '1', parentPid: 'MD-xyz' })
-    ).rejects.toThrow('Invalid pid format')
-    expect(mockQtestFetch).not.toHaveBeenCalled()
-  })
-})

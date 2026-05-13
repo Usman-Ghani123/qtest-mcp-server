@@ -42,26 +42,3 @@ describe('createModule', () => {
     )
   })
 })
-
-describe('createModule — parentPid path', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  it('resolves parentPid O(1) — no extra API call', async () => {
-    mockQtestFetch.mockResolvedValue({ id: 99, name: 'Sub' })
-    await createModule({ projectId: '1', name: 'Sub', parentPid: 'MD-448' })
-    expect(mockQtestFetch).toHaveBeenCalledTimes(1)
-    expect(mockQtestFetch).toHaveBeenCalledWith(
-      expect.anything(), '1',
-      '/modules?parentId=448&parentType=module', 'POST', { name: 'Sub' }
-    )
-  })
-
-  it('throws on malformed parentPid before any API call', async () => {
-    await expect(
-      createModule({ projectId: '1', name: 'Sub', parentPid: 'MD-abc' })
-    ).rejects.toThrow('Invalid pid format')
-    expect(mockQtestFetch).not.toHaveBeenCalled()
-  })
-})

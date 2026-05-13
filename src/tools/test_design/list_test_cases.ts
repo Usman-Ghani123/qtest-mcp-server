@@ -1,26 +1,15 @@
 import { config } from '@/config.js'
 import { qtestFetch, extractArray } from '@/client.js'
 import type { QTestTestCase, QTestProperty } from '@/types.js'
-import { parsePid } from '@/utils.js'
 
 export interface GetTestCasesArgs {
   projectId: string
-  moduleId?: number
-  modulePid?: string
+  moduleId: number
   filters?: Array<{ field: string; value: string }>
 }
 
 export async function getTestCases(args: GetTestCasesArgs): Promise<QTestTestCase[]> {
-  const { projectId, filters } = args
-
-  let resolvedModuleId: number
-  if (args.moduleId !== undefined) {
-    resolvedModuleId = args.moduleId
-  } else if (args.modulePid !== undefined) {
-    resolvedModuleId = parsePid(args.modulePid)
-  } else {
-    throw new Error('Provide either moduleId or modulePid')
-  }
+  const { projectId, moduleId: resolvedModuleId, filters } = args
 
   const all: QTestTestCase[] = []
   let page = 1

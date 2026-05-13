@@ -20,11 +20,10 @@ server.registerTool(
   'list-test-cases',
   {
     description:
-      'Test Design — fetch test cases from a qTest module with optional property filters (Type, Status, Priority, version, etc.). Identify the module via moduleId (numeric) or modulePid (e.g. "MD-448") — at least one required.',
+      'Test Design — fetch test cases from a qTest module with optional property filters (Type, Status, Priority, version, etc.). Requires moduleId (numeric).',
     inputSchema: {
       projectId: z.string().describe('Numeric project ID as string'),
-      moduleId: z.number().int().optional().describe('Numeric ID of the module'),
-      modulePid: z.string().optional().describe('Module PID (e.g. "MD-448"); alternative to moduleId'),
+      moduleId: z.number().int().describe('Numeric ID of the module'),
       filters: z
         .array(
           z.object({
@@ -36,8 +35,8 @@ server.registerTool(
         .describe('Filter by fields (AND logic); omit to return all'),
     },
   },
-  async ({ projectId, moduleId, modulePid, filters }) => {
-    const result = await getTestCases({ projectId, moduleId, modulePid, filters })
+  async ({ projectId, moduleId, filters }) => {
+    const result = await getTestCases({ projectId, moduleId, filters })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
@@ -50,12 +49,11 @@ server.registerTool(
     inputSchema: {
       projectId: z.string(),
       parentId: z.number().int().optional().describe('List children of this module ID'),
-      parentPid: z.string().optional().describe('List children by module PID (e.g. "MD-448"); alternative to parentId'),
       query: z.string().optional().describe('Search modules by name'),
     },
   },
-  async ({ projectId, parentId, parentPid, query }) => {
-    const result = await listModules({ projectId, parentId, parentPid, query })
+  async ({ projectId, parentId, query }) => {
+    const result = await listModules({ projectId, parentId, query })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
@@ -68,11 +66,10 @@ server.registerTool(
       projectId: z.string(),
       name: z.string().describe('Name of the new module'),
       parentId: z.number().int().optional().describe('Parent module ID; omit to create at root'),
-      parentPid: z.string().optional().describe('Parent module PID (e.g. "MD-448"); alternative to parentId'),
     },
   },
-  async ({ projectId, name, parentId, parentPid }) => {
-    const result = await createModule({ projectId, name, parentId, parentPid })
+  async ({ projectId, name, parentId }) => {
+    const result = await createModule({ projectId, name, parentId })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
@@ -90,11 +87,10 @@ server.registerTool(
         .int()
         .optional()
         .describe('Parent test cycle ID; omit to create at root'),
-      parentPid: z.string().optional().describe('Parent test cycle PID (e.g. "CL-710"); alternative to parentId'),
     },
   },
-  async ({ projectId, name, parentId, parentPid }) => {
-    const result = await createExecutionFolder({ projectId, name, parentId, parentPid })
+  async ({ projectId, name, parentId }) => {
+    const result = await createExecutionFolder({ projectId, name, parentId })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
@@ -140,17 +136,16 @@ server.registerTool(
   'list-test-cycle',
   {
     description:
-      'Test Execution — list qTest test cycles. Omit all optional args for root-level listing, provide id for a single cycle, provide pid to filter by PID (e.g. "CL-710"), or provide name to filter by name (case-insensitive exact match)',
+      'Test Execution — list qTest test cycles. Omit all optional args for root-level listing, provide id for a single cycle, or provide name to filter by name (case-insensitive exact match)',
     inputSchema: {
       projectId: z.string().describe('Numeric project ID as string'),
       id: z.number().int().optional().describe('Test cycle ID; returns a single cycle'),
-      pid: z.string().optional().describe('Filter cycles by PID (e.g. "CL-710")'),
       name: z.string().optional().describe('Filter cycles by name (case-insensitive exact match)'),
       parentId: z.number().int().optional().describe('List child cycles of this parent test cycle ID'),
     },
   },
-  async ({ projectId, id, pid, name, parentId }) => {
-    const result = await listTestCycles({ projectId, id, pid, name, parentId })
+  async ({ projectId, id, name, parentId }) => {
+    const result = await listTestCycles({ projectId, id, name, parentId })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
@@ -159,15 +154,14 @@ server.registerTool(
   'delete-test-cycle',
   {
     description:
-      'Test Execution — delete a qTest test cycle by id or pid. Cascades to all child test cycles, test suites, and test runs automatically. Provide either id (numeric) or pid (e.g. "CL-710")',
+      'Test Execution — delete a qTest test cycle by numeric id. Cascades to all child test cycles, test suites, and test runs automatically.',
     inputSchema: {
       projectId: z.string().describe('Numeric project ID as string'),
-      id: z.number().int().optional().describe('Test cycle numeric ID to delete'),
-      pid: z.string().optional().describe('Test cycle PID to delete (e.g. "CL-710"); alternative to id'),
+      id: z.number().int().describe('Test cycle numeric ID to delete'),
     },
   },
-  async ({ projectId, id, pid }) => {
-    const result = await deleteTestCycle({ projectId, id, pid })
+  async ({ projectId, id }) => {
+    const result = await deleteTestCycle({ projectId, id })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )
@@ -176,15 +170,14 @@ server.registerTool(
   'delete-module',
   {
     description:
-      'Test Design — delete a qTest test module by id. Cascades to all child modules and test cases automatically',
+      'Test Design — delete a qTest test module by numeric id. Cascades to all child modules and test cases automatically.',
     inputSchema: {
       projectId: z.string().describe('Numeric project ID as string'),
-      id: z.number().int().optional().describe('Numeric module ID to delete'),
-      pid: z.string().optional().describe('Module PID to delete (e.g. "MD-540"); alternative to id'),
+      id: z.number().int().describe('Numeric module ID to delete'),
     },
   },
-  async ({ projectId, id, pid }) => {
-    const result = await deleteModule({ projectId, id, pid })
+  async ({ projectId, id }) => {
+    const result = await deleteModule({ projectId, id })
     return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
   }
 )

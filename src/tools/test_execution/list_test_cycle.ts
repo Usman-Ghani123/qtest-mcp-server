@@ -1,13 +1,11 @@
 import { config } from '@/config.js'
 import { qtestFetch, extractArray } from '@/client.js'
 import type { QTestTestCycle } from '@/types.js'
-import { parsePid } from '@/utils.js'
 
 export interface ListTestCyclesArgs {
   projectId: string
   id?: number
   name?: string
-  pid?: string
   parentId?: number
 }
 
@@ -31,12 +29,7 @@ async function fetchCycleTree(projectId: string, cycle: QTestTestCycle): Promise
 export async function listTestCycles(
   args: ListTestCyclesArgs
 ): Promise<QTestTestCycle | QTestTestCycle[]> {
-  let { id } = args
-  const { projectId, name, pid, parentId } = args
-
-  if (id === undefined && pid !== undefined) {
-    id = parsePid(pid)
-  }
+  const { projectId, id, name, parentId } = args
 
   if (id !== undefined) {
     const raw = await qtestFetch(config, projectId, `/test-cycles/${id}`, 'GET')

@@ -54,27 +54,3 @@ describe('createExecutionFolder', () => {
     )
   })
 })
-
-describe('createExecutionFolder — parentPid path', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  it('resolves parentPid O(1) — no extra API call', async () => {
-    mockQtestFetch.mockResolvedValue({ id: 99, name: 'Child Cycle' })
-    await createExecutionFolder({ projectId: '1', name: 'Child Cycle', parentPid: 'CL-710' })
-    expect(mockQtestFetch).toHaveBeenCalledTimes(1)
-    expect(mockQtestFetch).toHaveBeenCalledWith(
-      expect.anything(), '1',
-      '/test-cycles?parentId=710&parentType=test-cycle', 'POST',
-      expect.objectContaining({ name: 'Child Cycle' })
-    )
-  })
-
-  it('throws on malformed parentPid before any API call', async () => {
-    await expect(
-      createExecutionFolder({ projectId: '1', name: 'X', parentPid: 'CL-abc' })
-    ).rejects.toThrow('Invalid pid format')
-    expect(mockQtestFetch).not.toHaveBeenCalled()
-  })
-})
