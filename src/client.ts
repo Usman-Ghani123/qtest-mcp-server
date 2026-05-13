@@ -21,7 +21,11 @@ export async function qtestFetchGlobal(
     const text = await response.text()
     throw new Error(`HTTP ${response.status}: ${text}`)
   }
-  return response.json()
+  if (response.status === 204 || response.headers.get('content-length') === '0') {
+    return null
+  }
+  const text = await response.text()
+  return text ? JSON.parse(text) : null
 }
 
 export async function qtestFetch(
@@ -44,7 +48,11 @@ export async function qtestFetch(
     const text = await response.text()
     throw new Error(`HTTP ${response.status}: ${text}`)
   }
-  return response.json()
+  if (response.status === 204 || response.headers.get('content-length') === '0') {
+    return null
+  }
+  const text = await response.text()
+  return text ? JSON.parse(text) : null
 }
 
 export function extractArray<T>(raw: unknown): T[] {

@@ -36,6 +36,11 @@ export interface QTestTestRun {
   name: string
 }
 
+export interface QTestTestSuite {
+  id: number
+  name: string
+}
+
 export interface QTestTestCycle {
   id: number
   name: string

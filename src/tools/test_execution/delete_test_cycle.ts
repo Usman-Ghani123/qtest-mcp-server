@@ -1,6 +1,6 @@
 import { config } from '@/config.js'
 import { qtestFetch, extractArray } from '@/client.js'
-import type { QTestTestCycle } from '@/types.js'
+import type { QTestTestCycle, QTestTestRun, QTestTestSuite } from '@/types.js'
 
 export interface DeleteTestCycleArgs {
   projectId: string
@@ -13,6 +13,25 @@ export interface DeleteTestCycleResult {
 }
 
 async function deleteRecursive(projectId: string, id: number): Promise<void> {
+  const suitesRaw = await qtestFetch(
+    config, projectId,
+    `/test-suites?parentId=${id}&parentType=test-cycle`,
+    'GET'
+  )
+  const suites = extractArray<QTestTestSuite>(suitesRaw)
+  for (const suite of suites) {
+    const runsRaw = await qtestFetch(
+      config, projectId,
+      `/test-runs?parentId=${suite.id}&parentType=test-suite`,
+      'GET'
+    )
+    const runs = extractArray<QTestTestRun>(runsRaw)
+    for (const run of runs) {
+      await qtestFetch(config, projectId, `/test-runs/${run.id}`, 'DELETE')
+    }
+    await qtestFetch(config, projectId, `/test-suites/${suite.id}`, 'DELETE')
+  }
+
   const childrenRaw = await qtestFetch(
     config, projectId,
     `/test-cycles?parentId=${id}&parentType=test-cycle`,
@@ -22,6 +41,7 @@ async function deleteRecursive(projectId: string, id: number): Promise<void> {
   for (const child of children) {
     await deleteRecursive(projectId, child.id)
   }
+
   await qtestFetch(config, projectId, `/test-cycles/${id}`, 'DELETE')
 }
 
