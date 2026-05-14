@@ -2,7 +2,7 @@
 
 > **Disclaimer:** This is an unofficial, community-built MCP server for qTest Manager. Not affiliated with or endorsed by Tricentis.
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets AI assistants (Claude, etc.) interact with qTest Manager — browse projects, manage test design modules, and build test execution cycles — all through natural language.
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets codebase or AI assistants (Claude, etc.) interact with qTest Manager — browse projects, manage test design modules, and build test execution cycles — all through natural language.
 
 ---
 
