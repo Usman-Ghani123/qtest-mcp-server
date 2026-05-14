@@ -1,6 +1,6 @@
 {
   "name": "qtest-mcp-server",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Unofficial MCP server for qTest Manager — browse modules, fetch test cases, build test execution folders",
   "author": "Usman Ghani <ug.usman18@outlook.com>",
   "repository": {
