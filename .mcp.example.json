@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "qtest": {
-      "command": "node",
-      "args": ["dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "qtest-mcp-server"],
       "env": {
         "QTEST_BASE_URL": "https://your-org.qtestnet.com",
         "QTEST_TOKEN": "your-personal-access-token"
