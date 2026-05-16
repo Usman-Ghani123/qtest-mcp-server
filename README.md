@@ -4,8 +4,11 @@
 
 An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets codebase or AI assistants (Claude, etc.) interact with qTest Manager — browse projects, manage test design modules, and build test execution cycles — all through natural language.
 
-Available on npm: [qtest-mcp-server](https://www.npmjs.com/package/qtest-mcp-server)
-Available on glama : [glama.ai](https://glama.ai/mcp/servers/Usman-Ghani123/qtest-mcp-server)
+
+Available on **npm** : [qtest-mcp-server](https://www.npmjs.com/package/qtest-mcp-server)
+
+Available on **glama** : [glama.ai](https://glama.ai/mcp/servers/Usman-Ghani123/qtest-mcp-server)
+
 ---
 
 ## Prerequisites
